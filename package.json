@@ -1,0 +1,30 @@
+{
+  "name": "qbraid_fullstack_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kthurman59/qBraid_Fullstack_Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kthurman59/qBraid_Fullstack_Project/issues"
+  },
+  "homepage": "https://github.com/kthurman59/qBraid_Fullstack_Project#readme",
+  "dependencies": {
+    "@types/node": "^22.10.10",
+    "@types/vscode": "^1.96.0",
+    "axios": "^1.7.9",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.3",
+    "vscode": "^1.1.37"
+  }
+}
