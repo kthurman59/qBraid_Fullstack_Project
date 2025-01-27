@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc",
-    "watch": "tsc -watch",
-    "pretest": "npm run compile",
-    "test": "node ./out/test/runTest.js",
-    "lint": "eslint src --ext ts",
-    "prepare": "npm run compile"
+    "compile": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "dev": "webpack --mode development",
+    "test": "jest",
+    "lint": "eslint src --ext ts,tsx",
+    "package": "vsce package"
   },
   "repository": {
     "type": "git",
