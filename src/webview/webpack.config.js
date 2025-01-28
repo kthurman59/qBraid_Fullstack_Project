@@ -8,14 +8,18 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
-        clean: true
+        libraryTarget: 'commonjs2',
+        clean: true,
     },
     devtool: 'source-map',
     externals: {
         vscode: 'commonjs vscode'
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        alias: {
+            '@': path.resolve(__dirname, 'src'),
+        },
     },
     module: {
         rules: [
@@ -27,7 +31,8 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader', 'postcss-loader']
-            }
-        ]
-    }
+            },
+        ],
+    },
+    target: 'node',
 };
