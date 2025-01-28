@@ -69,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register the showOutput command to open the output channel
     const showOutputCommand = vscode.commands.registerCommand('qbraidExtension.showOutput', () = > {
-        outputChannel.show()
+        outputChannel.show();
     });
 
     // Push the commands to the context's subscriptions
