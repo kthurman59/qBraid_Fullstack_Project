@@ -17,6 +17,6 @@ const root = createRoot(container!);
 root.render(
     <React.StrictMode>
         <App vscode={vscode} />
-    <React.StrictMode>
+    </React.StrictMode>
 );
 
