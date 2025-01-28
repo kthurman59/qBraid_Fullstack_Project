@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import axios, { AxiosError } from 'axios';
 
+
+
 // Create an output channel for logging
 const outputChannel = vscode.window.createOutputChannel('qBraid Extension');
 
