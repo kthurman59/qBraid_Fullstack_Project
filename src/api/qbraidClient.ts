@@ -32,7 +32,7 @@ export class QBraidClient {
         model: string = 'qbraid-chat-default'
     ): Promise<AsyncGenerator<string>> {
         try {
-            const reponse = await this.client.post('/chat', {
+            const response = await this.client.post('/chat', {
                 model,
                 messages: [{ role: 'user', content: message }],
                 stream: true
