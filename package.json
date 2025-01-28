@@ -14,14 +14,14 @@
   },
   "contributes": {
     "commands": [
-        {
-            "command": "qbraidExtension.helloWorld",
-            "title": "Say Hello"
-        },
-        {
-            "command": "qbraidExtension.fetchData",
-            "title": "Fetch Data from API"
-        }
+      {
+        "command": "qbraidExtension.helloWorld",
+        "title": "Say Hello"
+      },
+      {
+        "command": "qbraidExtension.fetchData",
+        "title": "Fetch Data from API"
+      }
     ]
   },
   "activationEvents": [
@@ -60,6 +60,7 @@
     "mocha": "^11.1.0",
     "react-refresh": "^0.16.0",
     "ts-loader": "^9.5.2",
+    "vscode-test": "^1.6.1",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   }
