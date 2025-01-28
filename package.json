@@ -9,8 +9,25 @@
     "dev": "webpack --mode development",
     "test": "jest",
     "lint": "eslint src --ext ts,tsx",
+    "integration-test": "tsc && node ./integrationTests/runTests.js",
     "package": "vsce package"
   },
+  "contributes": {
+    "commands": [
+        {
+            "command": "qbraidExtension.helloWorld",
+            "title": "Say Hello"
+        },
+        {
+            "command": "qbraidExtension.fetchData",
+            "title": "Fetch Data from API"
+        }
+    ]
+  },
+  "activationEvents": [
+    "onCommand:qbraidExtension.helloWorld",
+    "onCommand:qbraidExtension.fetchData"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kthurman59/qBraid_Fullstack_Project.git"
@@ -33,11 +50,14 @@
     "vscode": "^1.1.37"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.10",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
+    "chai": "^5.1.2",
     "eslint": "^9.19.0",
+    "mocha": "^11.1.0",
     "react-refresh": "^0.16.0",
     "ts-loader": "^9.5.2",
     "webpack": "^5.97.1",
