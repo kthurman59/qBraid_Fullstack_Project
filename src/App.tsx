@@ -18,7 +18,7 @@ const App: React.FC = () => {
 
         // Cleanup listener on unmount
         return () => {
-            window.returnEventListener('message', listener);
+            window.removeEventListener('message', listener);
         };
     }, []);
 
