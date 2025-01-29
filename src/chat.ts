@@ -26,6 +26,6 @@ export async function sendChatMessage() {
     }
 
     const data = await response.json();
-    vscode.window.showInformationMessage(`qBraid: ${data.response}`);
+    vscode.window.showInformationMessage(`qBraid: ${(data as { response: string }).response}`);
 
 }

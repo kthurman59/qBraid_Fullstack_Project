@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import axios, { AxiosError } from 'axios';
-import { setApiKey } from './settings';
-import { sendChatMessage } from './chat';
+import { setApiKey } from '../settings';
+import { sendChatMessage } from '../chat';
 
 // Create an output channel for logging
 const outputChannel = vscode.window.createOutputChannel('qBraid Extension');
