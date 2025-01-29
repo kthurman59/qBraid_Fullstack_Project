@@ -1,6 +1,11 @@
 import * as vscode from 'vscode';
 import axios, { AxiosError } from 'axios';
+import { setApiKey } from './settings';
 
+export function activate(context: vscode.ExtensionContext) {
+    let disposable = vscode.commands.registerCommand('qbraid.setApiKey', setApiKey);
+    context.subscriptions.push(disposable);
+}
 
 
 // Create an output channel for logging
