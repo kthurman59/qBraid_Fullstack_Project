@@ -8,7 +8,7 @@ interface AppProps {
     vscode: any; // Add the vscode prop
 }
 
-const App: React.FC = () => {
+const App: React.FC<AppProps> = ({ vscode }) => {
     const [message, setMessage] = useState<string | null>(null);
 
     //List for messages from VS code extension
