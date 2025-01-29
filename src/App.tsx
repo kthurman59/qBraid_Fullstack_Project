@@ -4,6 +4,10 @@ interface WebviewMessage {
     response: string;
 }
 
+interface AppProps {
+    vscode: any; // Add the vscode prop
+}
+
 const App: React.FC = () => {
     const [message, setMessage] = useState<string | null>(null);
 
