@@ -25,6 +25,10 @@
 //        },
     "commands": [
       {
+        "command": "qbraid.setApiKey",
+        "title": "Set qBraid API Key"
+      }
+      {
         "command": "qbraidExtension.helloWorld",
         "title": "Say Hello"
       },
