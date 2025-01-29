@@ -13,6 +13,16 @@
     "package": "vsce package"
   },
   "contributes": {
+    "Configuration": {
+            "title": "qBraid Chat",
+            "properties": {
+                "qbraidChat.apiKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "your qBraid API Key"
+                }
+            }
+        },
     "commands": [
       {
         "command": "qbraidExtension.helloWorld",
