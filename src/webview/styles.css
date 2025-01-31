@@ -48,3 +48,21 @@ body {
 .message strong {
     color: #0ea5e9; /* Tailwind's blue-500 */
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.message {
+    animation: fadeIn 0.3s ease-in;
+}
+
+#chat {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.message string {
+    color: #0ea5e9;
+}
