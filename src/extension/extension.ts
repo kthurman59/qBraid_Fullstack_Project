@@ -105,6 +105,27 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
+        // Validate API key
+        const isValid = await validateApiKey(apiKey);
+        if (!isValid) {
+            vscode.window.showErrorMessage('Invalid API Key. Please set a valid API Key.');
+            return;
+        }
+
+        async function validateApiKey(apiKey: string): Promise<boolean> {
+            try {
+                const response = await fetch('https://api.qbraid.com/chat/models', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                    },
+                });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+
         // Create the chat webview
         const panel = createChatWebview(context);
 
