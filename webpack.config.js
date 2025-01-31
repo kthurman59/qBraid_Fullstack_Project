@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Shared configuration
 const commonConfig = {
@@ -54,6 +55,17 @@ const webviewConfig = {
     filename: '[name].js',
     clean: false, // Don't clean on webview build as it would remove extension.js
   },
+  plugins: [
+    // Copy the styles.css file to the dist folder
+    new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, 'src/webview/styles.css'),
+                    to: path.resolve(__dirname, 'dist/webview/styles.css'),
+                },
+            ],
+        }),
+    ],
 };
 
 // Export both configurations
