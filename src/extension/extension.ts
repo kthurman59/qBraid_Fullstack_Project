@@ -18,12 +18,20 @@ function createChatWebview(context: vscode.ExtensionContext): vscode.WebviewPane
         }
     );
 
+    // Get the URI for the CSS file
+    const stylesUri = panel.webview.asWebviewUri(
+        vscode.Uri.joinPath(context.extensionUri, 'src', 'webview', 'styles.css')
+    );
+
     // Set the HTML content for the webview
     panel.webview.html = `
         <html>
+            <head>
+                <link rel="stylesheet" href="${stylesUri}">
+            </head>
             <body>
                 <h1>qBraid Chat</h1>
-                <div id="chat" style="white-space: pre-wrap;"></div>
+                <div id="chat"></div>
                 <input id="input" type="text" placeholder="Type your message here..." />
                 <button id="send">Send</button>
                 <script>
@@ -35,7 +43,7 @@ function createChatWebview(context: vscode.ExtensionContext): vscode.WebviewPane
                     send.addEventListener('click', () => {
                         const message = input.value;
                         if (message) {
-                            chat.innerHTML += \`<p><strong>You:</strong> \${message}</p>\`;
+                            chat.innerHTML += \`<div class="message"><strong>You:</strong> \${message}</div>\`;
                             input.value = '';
                             vscode.postMessage({ command: 'sendMessage', text: message });
                         }
@@ -45,7 +53,7 @@ function createChatWebview(context: vscode.ExtensionContext): vscode.WebviewPane
                     window.addEventListener('message', event => {
                         const message = event.data;
                         if (message.command === 'receiveMessage') {
-                            chat.innerHTML += \`<p><strong>qBraid:</strong> \${message.text}</p>\`;
+                            chat.innerHTML += \`<div class="message"><strong>qBraid:</strong> \${message.text}</div>\`;
                         }
                     });
                 </script>
