@@ -32,12 +32,24 @@ function createChatWebview(context: vscode.ExtensionContext): vscode.WebviewPane
             <body>
                 <h1>qBraid Chat</h1>
                 <div id="chat"></div>
+                <div id="typing-indicator" style="display: none; color: #0ea5e9; font-style: italic;">qBraid is typing...</div>
                 <input id="input" type="text" placeholder="Type your message here..." />
                 <button id="send">Send</button>
                 <script>
                     const chat = document.getElementById('chat');
                     const input = document.getElementById('input');
                     const send = document.getElementById('send');
+                    const typingIndicator = document.getElementById('typing-indicator');
+
+                    // Show typing indicator
+                    function showTypingIndicator() {
+                        typingIndicator.style.display = 'block';
+                    }
+
+                    // Hide typing indicator
+                    function hideTypingIndicator() {
+                        typingIndicator.style.display = 'none';
+                    }
 
                     // Send message to the extension
                     send.addEventListener('click', () => {
@@ -46,6 +58,7 @@ function createChatWebview(context: vscode.ExtensionContext): vscode.WebviewPane
                             chat.innerHTML += \`<div class="message"><strong>You:</strong> \${message}</div>\`;
                             input.value = '';
                             vscode.postMessage({ command: 'sendMessage', text: message });
+                            showTypingIndicator(); // Show typing indicator when sending a message
                         }
                     });
 
@@ -54,6 +67,7 @@ function createChatWebview(context: vscode.ExtensionContext): vscode.WebviewPane
                         const message = event.data;
                         if (message.command === 'receiveMessage') {
                             chat.innerHTML += \`<div class="message"><strong>qBraid:</strong> \${message.text}</div>\`;
+                            hideTypingIndicator(); // Hide typing indicator when the response is received
                         }
                     });
                 </script>
