@@ -1,8 +1,8 @@
 {
-  "name": "qbraid_fullstack_project",
+  "name": "qbraid-extension",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./out/extension.js",
   "scripts": {
     "compile": "webpack --mode production",
     "watch": "webpack --mode development --watch",
@@ -19,18 +19,19 @@
         "title": "Set qBraid API Key"
       },
       {
-        "command": "qbraidExtension.helloWorld",
-        "title": "Say Hello"
+        "command": "qbraid.sendChatMessage",
+        "title": "Open qBraid Chat"
       },
       {
-        "command": "qbraidExtension.fetchData",
-        "title": "Fetch Data from API"
+        "command": "qbraid.showOutput",
+        "title": "Show qBraid Output"
       }
     ]
   },
   "activationEvents": [
-    "onCommand:qbraidExtension.helloWorld",
-    "onCommand:qbraidExtension.fetchData"
+    "onCommand:qbraid.setApiKey",
+    "onCommand:qbraid.sendChatMessage",
+    "onCommand:qbraid.showOutput"
   ],
   "repository": {
     "type": "git",
@@ -51,8 +52,7 @@
     "axios": "^1.7.9",
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "vscode": "^1.1.34"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -61,6 +61,7 @@
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
     "chai": "^5.1.2",
+    "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",
     "eslint": "^9.19.0",
     "mocha": "^11.1.0",
@@ -69,6 +70,7 @@
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.2",
     "typescript": "^5.7.3",
+    "vscode": "^1.1.37",
     "vscode-test": "^1.6.1",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"

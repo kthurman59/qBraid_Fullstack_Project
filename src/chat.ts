@@ -1,8 +1,11 @@
 import * as vscode from 'vscode';
 import fetch from 'node-fetch';
 
+// Create an output channel for logging
+const outputChannel = vscode.window.createOutputChannel('qBraid Chat');
+
 // Function to send a chat message and stream the response
-export async function sendChatMessage(apiKey: string, message: string, outputChannel: vscode.OutputChannel) {
+export async function sendChatMessage(apiKey: string, message: string, webview: vscode.Webview) {
     try {
         const response = await fetch('https://api.qbraid.com/chat', {
             method: 'POST',
@@ -17,24 +20,28 @@ export async function sendChatMessage(apiKey: string, message: string, outputCha
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const reader = response.body?.getReader();
-        if (reader) {
-            const decoder = new TextDecoder();
-            let result = '';
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                const chunk = decoder.decode(value);
-                result += chunk;
-                outputChannel.append(chunk); // Stream response to output channel
-            }
-
-            outputChannel.appendLine(''); // Add a newline after the response
+        if (!response.body) {
+            throw new Error('Response body is null');
         }
-    } catch (error) {
-        outputChannel.appendLine(`Error: ${error.message}`);
+
+        const reader = (response.body as unknown as ReadableStream<Uint8Array>).getReader();
+        const decoder = new TextDecoder();
+        let result = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            result += chunk;
+            webview.postMessage({ command: 'receiveMessage', text: chunk });
+        }
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            webview.postMessage({ command: 'receiveMessage', text: `Error: ${error.message}` });
+        } else {
+            webview.postMessage({ command: 'receiveMessage', text: 'Unknown error occurred' });
+        }
     }
 }
 
@@ -53,32 +60,31 @@ function parseUserInput(input: string): string {
 
 // Function to handle user input
 export async function handleUserInput(apiKey: string, input: string, webview: vscode.Webview) {
-    try {
     const intent = parseUserInput(input);
 
     switch (intent) {
         case "deviceStatus":
-            const devices = await getQuantumDevices(apiKey);
-            webview.postMessage({ command: 'recieveMessage', text: `On line devices: ${devices.join(',')}`});
+            await displayQuantumDevices(apiKey, webview);
             break;
-
         case "jobStatus":
-            const job = await getJobStatus(apiKey);
-            webview.postMessage({ command: 'receiveMessage', text: `Job status: ${job.status}` });
+            await displayJobStatus(apiKey, webview);
             break;
-
         default:
             webview.postMessage({ command: 'receiveMessage', text: `You: ${input}` });
-            
-            // sendChatMessage also sends a message back
-            const response = await sendChatMessage(apiKey, input);
-            webview.postMessage({ command: 'receiveMessage', text: `qBraid: ${response}` });
+            await sendChatMessage(apiKey, input, webview);
             break;
     }
-  } catch (error) {
-        console.error("Error handling user input:", error);
-        webview.posMessage({ command: 'receiveMessage', text: "An error occured while processing your request." });
-    }
+}
+
+interface Device {
+    // Define the properties of a device if known
+    id: string;
+    name: string;
+    // Add other properties of the device as necessary
+}
+
+interface Data {
+    devices: Device[]; // Assuming devices is an array of Device objects
 }
 
 // Function to fetch quantum devices
@@ -96,30 +102,47 @@ async function getQuantumDevices(apiKey: string) {
         }
 
         const data = await response.json();
-        return data.devices; // Assuming the API returns an array of devices
-    } catch (error) {
-        throw new Error(`Failed to fetch quantum devices: ${error.message}`);
+        return (data as Data).devices; // Assuming the API returns an array of devices
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch quantum devices: ${error.message}`);
+        } else {
+            throw new Error('Unknown error occurred while fetching quantum devices');
+        }
     }
 }
 
 // Function to display quantum device status
-async function displayQuantumDevices(apiKey: string, outputChannel: vscode.OutputChannel) {
+async function displayQuantumDevices(apiKey: string, webview: vscode.Webview) {
     try {
         const devices = await getQuantumDevices(apiKey);
         const onlineDevices = devices.filter((device: any) => device.status === "online");
 
         if (onlineDevices.length > 0) {
             const deviceList = onlineDevices.map((device: any) => `- ${device.name}`).join('\n');
-            outputChannel.appendLine(`Online quantum devices:\n${deviceList}`);
+            webview.postMessage({ command: 'receiveMessage', text: `Online quantum devices:\n${deviceList}` });
         } else {
-            outputChannel.appendLine('No quantum devices are currently online.');
+            webview.postMessage({ command: 'receiveMessage', text: 'No quantum devices are currently online.' });
         }
-    } catch (error) {
-        outputChannel.appendLine(`Error: ${error.message}`);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            webview.postMessage({ command: 'receiveMessage', text: `Error: ${error.message}` });
+        } else {
+            webview.postMessage({ command: 'receiveMessage', text: 'Unknown error occurred' });
+        }
     }
 }
 
-// Function to fetch the status of the most recent job
+interface Job {
+    id: string;
+    status: string;
+    // Add other properties of the job as necessary
+}
+
+interface JobData {
+    jobs: Job[]; // Assuming jobs is an array of Job objects
+}
+
 async function getJobStatus(apiKey: string) {
     try {
         const response = await fetch('https://api.qbraid.com/jobs', {
@@ -134,19 +157,30 @@ async function getJobStatus(apiKey: string) {
         }
 
         const data = await response.json();
-        const recentJob = data.jobs[0]; // Assuming the API returns jobs sorted by date
+
+        // Type assertion to tell TypeScript that data is of type JobData
+        const recentJob = (data as JobData).jobs[0]; // Assuming the API returns jobs sorted by date
         return recentJob;
-    } catch (error) {
-        throw new Error(`Failed to fetch job status: ${error.message}`);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch job status: ${error.message}`);
+        } else {
+            throw new Error('Unknown error occurred while fetching job status');
+        }
     }
 }
 
+
 // Function to display job status
-async function displayJobStatus(apiKey: string, outputChannel: vscode.OutputChannel) {
+async function displayJobStatus(apiKey: string, webview: vscode.Webview) {
     try {
         const job = await getJobStatus(apiKey);
-        outputChannel.appendLine(`Status of your most recent job (ID: ${job.id}): ${job.status}`);
-    } catch (error) {
-        outputChannel.appendLine(`Error: ${error.message}`);
+        webview.postMessage({ command: 'receiveMessage', text: `Status of your most recent job (ID: ${job.id}): ${job.status}` });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            webview.postMessage({ command: 'receiveMessage', text: `Error: ${error.message}` });
+        } else {
+            webview.postMessage({ command: 'receiveMessage', text: 'Unknown error occurred' });
+        }
     }
 }
