@@ -62,6 +62,13 @@ function createChatWebview(context: vscode.ExtensionContext): vscode.WebviewPane
                         }
                     });
 
+                    // Input box focuses when the webview opens
+                    window.addEventListener('message', event => {
+                        if (event.data.command === 'focusInput') {
+                            input.focus();
+                        }
+                    });
+
                     // Receive message from the extension
                     window.addEventListener('message', event => {
                         const message = event.data;
