@@ -52,20 +52,32 @@ function parseUserInput(input: string): string {
 }
 
 // Function to handle user input
-export async function handleUserInput(apiKey: string, input: string, outputChannel: vscode.OutputChannel) {
+export async function handleUserInput(apiKey: string, input: string, webview: vscode.Webview) {
+    try {
     const intent = parseUserInput(input);
 
     switch (intent) {
         case "deviceStatus":
-            await displayQuantumDevices(apiKey, outputChannel);
+            const devices = await getQuantumDevices(apiKey);
+            webview.postMessage({ command: 'recieveMessage', text: `On line devices: ${devices.join(',')}`});
             break;
+
         case "jobStatus":
-            await displayJobStatus(apiKey, outputChannel);
+            const job = await getJobStatus(apiKey);
+            webview.postMessage({ command: 'receiveMessage', text: `Job status: ${job.status}` });
             break;
+
         default:
-            outputChannel.appendLine(`You: ${input}`);
-            await sendChatMessage(apiKey, input, outputChannel);
+            webview.postMessage({ command: 'receiveMessage', text: `You: ${input}` });
+            
+            // sendChatMessage also sends a message back
+            const response = await sendChatMessage(apiKey, input);
+            webview.postMessage({ command: 'receiveMessage', text: `qBraid: ${response}` });
             break;
+    }
+  } catch (error) {
+        console.error("Error handling user input:", error);
+        webview.posMessage({ command: 'receiveMessage', text: "An error occured while processing your request." });
     }
 }
 
