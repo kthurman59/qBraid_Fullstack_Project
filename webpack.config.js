@@ -15,14 +15,15 @@ const commonConfig = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },
+  mode: 'development', // Set the mode here for both configs
 };
 
 // Extension configuration (runs in Node.js)
@@ -36,10 +37,10 @@ const extensionConfig = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     clean: true,
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
   },
   externals: {
-    vscode: 'commonjs vscode'
+    vscode: 'commonjs vscode',
   },
 };
 
@@ -58,15 +59,16 @@ const webviewConfig = {
   plugins: [
     // Copy the styles.css file to the dist folder
     new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.resolve(__dirname, 'src/webview/styles.css'),
-                    to: path.resolve(__dirname, 'dist/webview/styles.css'),
-                },
-            ],
-        }),
-    ],
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src/webview/styles.css'),
+          to: path.resolve(__dirname, 'dist/webview/styles.css'),
+        },
+      ],
+    }),
+  ],
 };
 
 // Export both configurations
 module.exports = [extensionConfig, webviewConfig];
+

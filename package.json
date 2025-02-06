@@ -1,16 +1,20 @@
 {
-  "name": "qbraid-extension",
-  "version": "1.0.0",
-  "description": "",
-  "main": "./out/extension.js",
+  "name": "qbraid-chat",
+  "version": "0.1.0",
+  "description": "A VS Code extension for qBraid chat functionality",
+  "main": "./dist/extension.js",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
   "scripts": {
-    "compile": "webpack --mode production",
-    "watch": "webpack --mode development --watch",
+    "compile": "webpack",
+    "watch": "webpack --watch",
     "dev": "webpack --mode development",
-    "test": "jest",
+    "test": "node ./test/runTest.js",
+    "vscode:prepublish": "npm run compile",
     "lint": "eslint src --ext ts,tsx",
     "integration-test": "tsc && node ./integrationTests/runTests.js",
-    "package": "vsce package"
+    "vsce:package": "vsce package"
   },
   "contributes": {
     "commands": [
@@ -37,42 +41,54 @@
     "type": "git",
     "url": "git+https://github.com/kthurman59/qBraid_Fullstack_Project.git"
   },
-  "keywords": [],
+  "keywords": [
+    "qbraid",
+    "chat",
+    "vscode",
+    "extension"
+  ],
   "author": "",
   "license": "ISC",
+  "files": [
+    "dist"
+  ],
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/kthurman59/qBraid_Fullstack_Project/issues"
   },
   "homepage": "https://github.com/kthurman59/qBraid_Fullstack_Project#readme",
   "dependencies": {
-    "@types/node": "^22.10.10",
-    "@types/node-fetch": "^2.6.12",
-    "@types/vscode": "^1.96.0",
     "axios": "^1.7.9",
-    "node-fetch": "^3.3.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "node-fetch": "^2.6.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/node": "^20.10.10",
+    "@types/node-fetch": "^2.6.12",
+    "@types/vscode": "^1.96.0",
     "@types/mocha": "^10.0.10",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.21.0",
-    "@typescript-eslint/parser": "^8.21.0",
+    "@types/react": "^18.2.8",
+    "@types/react-dom": "^18.2.3",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vscode/test-electron": "^2.3.8",
     "chai": "^5.1.2",
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",
-    "eslint": "^9.19.0",
-    "mocha": "^11.1.0",
+    "eslint": "^8.19.0",
+    "glob": "^9.3.5",
+    "mocha": "^10.1.0",
     "postcss-loader": "^8.1.1",
     "react-refresh": "^0.16.0",
+    "rimraf": "^4.4.1",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.2",
-    "typescript": "^5.7.3",
+    "typescript": "^5.3.3",
     "vscode": "^1.1.37",
     "vscode-test": "^1.6.1",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   }
 }
+
