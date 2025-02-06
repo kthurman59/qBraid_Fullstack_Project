@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import fetch from 'node-fetch';
 import { setApiKey } from '../settings';
 import { handleUserInput } from '../chat';
 
@@ -12,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     const chatCommand = vscode.commands.registerCommand('qbraid.sendChatMessage', async () => {
         outputChannel.appendLine('qBraid Chat Command Triggered');
 
-        const apiKey = vscode.workspace.getConfiguration('qbraid').get('apikey') as string;
+        const apiKey = vscode.workspace.getConfiguration('qbraid').get<string>('apikey');
 
         if (!apiKey) {
             vscode.window.showErrorMessage('API Key not set. Run "Set qBraid API Key" first.');

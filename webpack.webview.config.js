@@ -2,9 +2,9 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'production',
-  target: 'web', // build for the browser environment
-  entry: './src/webview/index.tsx',  // your webview entry point
+  mode: 'production', // or 'development' for a dev build
+  target: 'web', // This bundle is for the browser environment
+  entry: './src/webview/index.tsx',  // Update this path if your webview entry point is different
   output: {
     path: path.resolve(__dirname, 'dist', 'webview'),
     filename: 'webview.js'
@@ -21,6 +21,6 @@ module.exports = {
       }
     ]
   }
-  // Do NOT add an "externals" section for vscode here.
+  // Do not mark "vscode" as external here.
 };
 

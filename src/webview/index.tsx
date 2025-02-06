@@ -1,22 +1,11 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+// src/webview/index.tsx
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import App from '../App';
-import './styles.css';
 
-// Establish VS code webview API connection
-declare global {
-    interface Window {
-        acquireVsCodeApi(): any,
-    }
-}
+declare const acquireVsCodeApi: any; // Provided globally in webview context
 
-const vscode = window.acquireVsCodeApi();
+const vscode = acquireVsCodeApi();
 
-const container = document.getElementById('root');
-const root = createRoot(container!);
-root.render(
-    <React.StrictMode>
-        <App vscode={vscode} />
-    </React.StrictMode>
-);
+ReactDOM.render(<App vscode={vscode} />, document.getElementById('root'));
 

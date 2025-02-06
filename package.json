@@ -4,7 +4,7 @@
   "description": "A VS Code extension for qBraid chat functionality",
   "main": "./dist/extension.js",
   "engines": {
-    "vscode": "^1.70.0"
+    "vscode": "^1.75.0"
   },
   "scripts": {
     "compile": "webpack",
@@ -17,6 +17,17 @@
     "vsce:package": "vsce package"
   },
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "qBraid Extension Settings",
+      "properties": {
+        "qbraid.apikey": {
+          "type": "string",
+          "default": "",
+          "description": "The API key for authenticating with qBraid services."
+        }
+      }
+    },
     "commands": [
       {
         "command": "qbraid.setApiKey",
@@ -32,11 +43,6 @@
       }
     ]
   },
-  "activationEvents": [
-    "onCommand:qbraid.setApiKey",
-    "onCommand:qbraid.sendChatMessage",
-    "onCommand:qbraid.showOutput"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kthurman59/qBraid_Fullstack_Project.git"

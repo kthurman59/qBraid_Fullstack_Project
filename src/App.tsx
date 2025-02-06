@@ -1,38 +1,35 @@
+// src/App.tsx
 import React, { useState, useEffect } from 'react';
 
 interface WebviewMessage {
-    response: string;
+  response: string;
 }
 
 interface AppProps {
-    vscode: any; // Add the vscode prop
+  vscode: any; // Passed from the webview entry point
 }
 
 const App: React.FC<AppProps> = ({ vscode }) => {
-    const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
-    //List for messages from VS code extension
-    useEffect(() => {
-        const listener = (event: MessageEvent) => {
-            const message: WebviewMessage = event.data;
-            setMessage(message.response);
-        };
+  // Listen for messages from the extension host
+  useEffect(() => {
+    const listener = (event: MessageEvent) => {
+      const message: WebviewMessage = event.data;
+      setMessage(message.response);
+    };
 
-        window.addEventListener('message', listener);
+    window.addEventListener('message', listener);
+    return () => window.removeEventListener('message', listener);
+  }, []);
 
-        // Cleanup listener on unmount
-        return () => {
-            window.removeEventListener('message', listener);
-        };
-    }, []);
-
-
-    return (
-        <div>
-            <h1>qBraid Webview</h1>
-            <p>{message ? message : "Waiting for message..."}</p>
-        </div>
-    );
+  return (
+    <div>
+      <h1>qBraid Webview</h1>
+      <p>{message ? message : "Waiting for message..."}</p>
+    </div>
+  );
 };
 
 export default App;
+
