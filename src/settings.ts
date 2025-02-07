@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 // Function to set the API key
-export async function setApiKey() {
+export async function setApiKey(context: vscode.ExtensionContext) {
     const apiKey = await vscode.window.showInputBox({
         prompt: 'Enter your qBraid API Key',
         placeHolder: 'API Key',
@@ -9,9 +9,10 @@ export async function setApiKey() {
     });
 
     if (apiKey) {
-        await vscode.workspace.getConfiguration('qbraid').update('apikey', apiKey, true);
+        await context.secrets.store('qbraidApiKey', apiKey);
         vscode.window.showInformationMessage('API Key set successfully!');
     } else {
         vscode.window.showErrorMessage('API Key is required.');
     }
 }
+

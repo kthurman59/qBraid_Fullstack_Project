@@ -1,22 +1,33 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import fetch from 'node-fetch';
-import { setApiKey } from '../settings';
 import { handleUserInput } from '../chat';
 
 export function activate(context: vscode.ExtensionContext) {
     const outputChannel = vscode.window.createOutputChannel('qBraid Extension');
     outputChannel.appendLine('qBraid Extension Activated');
 
-    const disposable = vscode.commands.registerCommand('qbraid.setApiKey', setApiKey);
+    // Register command to set the API key
+    const setApiKeyCommand = vscode.commands.registerCommand('qbraid.setApiKey', async () => {
+        const apiKey = await vscode.window.showInputBox({
+            prompt: 'Enter your qBraid API Key',
+            ignoreFocusOut: true,
+            password: true,
+        });
 
+        if (apiKey) {
+            await context.secrets.store('qbraidApiKey', apiKey);
+            vscode.window.showInformationMessage('API Key has been set successfully.');
+        } else {
+            vscode.window.showErrorMessage('API Key input was canceled or empty.');
+        }
+    });
+
+    // Register command to initiate chat
     const chatCommand = vscode.commands.registerCommand('qbraid.sendChatMessage', async () => {
         outputChannel.appendLine('qBraid Chat Command Triggered');
 
-        const apiKey = vscode.workspace.getConfiguration('qbraid').get<string>('apikey');
-
+        const apiKey = await getApiKey(context);
         if (!apiKey) {
-            vscode.window.showErrorMessage('API Key not set. Run "Set qBraid API Key" first.');
             return;
         }
 
@@ -40,19 +51,28 @@ export function activate(context: vscode.ExtensionContext) {
         );
     });
 
-    context.subscriptions.push(disposable, chatCommand);
+    context.subscriptions.push(setApiKeyCommand, chatCommand);
 
+    // Register command to show the output channel
     const showOutputCommand = vscode.commands.registerCommand('qbraid.showOutput', () => {
         outputChannel.show();
     });
 
     context.subscriptions.push(showOutputCommand);
 
-    outputChannel.appendLine('qBraid Extension activated.');
+    outputChannel.appendLine('qBraid Extension fully activated.');
 }
 
 export function deactivate() {
     // Clean up resources if necessary
+}
+
+async function getApiKey(context: vscode.ExtensionContext): Promise<string | undefined> {
+    const apiKey = await context.secrets.get('qbraidApiKey');
+    if (!apiKey) {
+        vscode.window.showErrorMessage('API Key not set. Run "Set qBraid API Key" first.');
+    }
+    return apiKey;
 }
 
 async function validateApiKey(apiKey: string): Promise<boolean> {
@@ -65,6 +85,11 @@ async function validateApiKey(apiKey: string): Promise<boolean> {
         });
         return response.ok;
     } catch (error) {
+        if (error instanceof Error) {
+            console.error('API Key validation error:', error.message);
+        } else {
+            console.error('An unexpected error occured during API Key validation:', error);
+        }
         return false;
     }
 }
